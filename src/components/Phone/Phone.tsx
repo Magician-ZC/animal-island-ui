@@ -51,7 +51,12 @@ export const Phone: React.FC<PhoneProps> = ({ className }) => {
                         <div className={styles.dateDisplay}>
                             <div className={styles.dateDisplayHeader}>
                                 <span className={styles.iconWifi} />
-                                <div>{displayHours}<span className={styles.blink}>:</span>{displayMinutes}{ampm}</div>
+                                <div>
+                                    {displayHours}
+                                    <span className={styles.blink}>:</span>
+                                    {displayMinutes}
+                                    {ampm}
+                                </div>
                                 <span className={styles.iconLocation} />
                             </div>
                             <div className={styles.dayText}>Welcome!</div>

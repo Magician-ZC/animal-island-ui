@@ -1,9 +1,9 @@
 @import (reference) '../../styles/variables.less';
 
 // 调色板（取自 figma 设计稿）
-@wallet-pill-fill: #b3a046;        // 橄榄黄主色
-@wallet-pill-shadow: #8e7d2c;      // pill 暗部
-@wallet-halo: #fffbe7;             // 外发光奶油色
+@wallet-pill-fill: #b3a046; // 橄榄黄主色
+@wallet-pill-shadow: #8e7d2c; // pill 暗部
+@wallet-halo: #fffbe7; // 外发光奶油色
 @wallet-text: #ffffff;
 @wallet-text-shadow: rgba(91, 78, 30, 0.55);
 
@@ -100,7 +100,14 @@
 }
 
 @keyframes walletBagBounce {
-    0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
-    35%      { transform: translateX(-50%) translateY(-8px) rotate(-6deg); }
-    70%      { transform: translateX(-50%) translateY(-2px) rotate(3deg); }
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0) rotate(0deg);
+    }
+    35% {
+        transform: translateX(-50%) translateY(-8px) rotate(-6deg);
+    }
+    70% {
+        transform: translateX(-50%) translateY(-2px) rotate(3deg);
+    }
 }

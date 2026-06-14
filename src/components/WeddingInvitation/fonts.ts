@@ -21,8 +21,6 @@ import notoCN400 from '@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simpl
 import notoCN500 from '@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-500-normal.woff2?url';
 import notoCN700 from '@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff2?url';
 
-
-
 interface FontDef {
     family: string;
     weight: number;
@@ -30,15 +28,15 @@ interface FontDef {
 }
 
 const WEDDING_FONTS: FontDef[] = [
-    {family: 'Nunito', weight: 500, url: nunito500},
-    {family: 'Nunito', weight: 700, url: nunito700},
-    {family: 'Nunito', weight: 900, url: nunito900},
-    {family: 'Noto Sans SC', weight: 400, url: notoLatin400},
-    {family: 'Noto Sans SC', weight: 500, url: notoLatin500},
-    {family: 'Noto Sans SC', weight: 700, url: notoLatin700},
-    {family: 'Noto Sans SC', weight: 400, url: notoCN400},
-    {family: 'Noto Sans SC', weight: 500, url: notoCN500},
-    {family: 'Noto Sans SC', weight: 700, url: notoCN700},
+    { family: 'Nunito', weight: 500, url: nunito500 },
+    { family: 'Nunito', weight: 700, url: nunito700 },
+    { family: 'Nunito', weight: 900, url: nunito900 },
+    { family: 'Noto Sans SC', weight: 400, url: notoLatin400 },
+    { family: 'Noto Sans SC', weight: 500, url: notoLatin500 },
+    { family: 'Noto Sans SC', weight: 700, url: notoLatin700 },
+    { family: 'Noto Sans SC', weight: 400, url: notoCN400 },
+    { family: 'Noto Sans SC', weight: 500, url: notoCN500 },
+    { family: 'Noto Sans SC', weight: 700, url: notoCN700 },
 ];
 
 /** 组件统一字体栈 —— 所有 .envelope 内的 text 元素继承此值 */
@@ -47,7 +45,8 @@ export const WEDDING_FONT_FAMILY =
 
 const buildFontFaceCss = (urlResolver: (url: string) => string): string =>
     WEDDING_FONTS.map(
-        ({family, weight, url}) => `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};font-display:swap;src:url('${urlResolver(url)}') format('woff2');}`,
+        ({ family, weight, url }) =>
+            `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};font-display:swap;src:url('${urlResolver(url)}') format('woff2');}`
     ).join('\n');
 
 // ---------- 网页用：模块加载即把指向 woff2 url 的 @font-face 注入 <head> ----------
@@ -57,7 +56,7 @@ export const injectWeddingFonts = (): void => {
     injected = true;
     const style = document.createElement('style');
     style.setAttribute('data-wedding-fonts', '');
-    style.textContent = buildFontFaceCss(u => u);
+    style.textContent = buildFontFaceCss((u) => u);
     document.head.appendChild(style);
 };
 
@@ -75,9 +74,9 @@ export const prepareWeddingFontsForExport = (): Promise<string> => {
     exportPrepPromise = (async () => {
         const dataUrlMap = new Map<string, string>();
         await Promise.all(
-            WEDDING_FONTS.map(async ({family, weight, url}) => {
+            WEDDING_FONTS.map(async ({ family, weight, url }) => {
                 try {
-                    const r = await fetch(url, {mode: 'cors', credentials: 'omit'});
+                    const r = await fetch(url, { mode: 'cors', credentials: 'omit' });
                     if (!r.ok) return;
                     const buf = await r.arrayBuffer();
 
@@ -97,8 +96,8 @@ export const prepareWeddingFontsForExport = (): Promise<string> => {
                     }
 
                     // 2) 转 data URL —— 给截图用
-                    const blob = new Blob([buf], {type: 'font/woff2'});
-                    const dataUrl: string = await new Promise(resolve => {
+                    const blob = new Blob([buf], { type: 'font/woff2' });
+                    const dataUrl: string = await new Promise((resolve) => {
                         const fr = new FileReader();
                         fr.onload = () => resolve(fr.result as string);
                         fr.readAsDataURL(blob);
@@ -107,17 +106,15 @@ export const prepareWeddingFontsForExport = (): Promise<string> => {
                 } catch (err) {
                     console.warn('[WeddingInvitation] 字体抓取失败：', url, err);
                 }
-            }),
+            })
         );
         try {
             await document.fonts?.ready;
         } catch {
             // 容错
         }
-        console.info(
-            `[WeddingInvitation] 字体已就绪：${dataUrlMap.size}/${WEDDING_FONTS.length}`,
-        );
-        return buildFontFaceCss(u => dataUrlMap.get(u) ?? u);
+        console.info(`[WeddingInvitation] 字体已就绪：${dataUrlMap.size}/${WEDDING_FONTS.length}`);
+        return buildFontFaceCss((u) => dataUrlMap.get(u) ?? u);
     })();
     return exportPrepPromise;
 };

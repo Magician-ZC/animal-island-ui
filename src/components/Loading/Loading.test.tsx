@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 
 // gsap 内部用到大量浏览器 API；jsdom 下 startAnimation 仅做最简 mock 即可
 vi.mock('./island/script.js', () => ({
@@ -16,9 +16,7 @@ describe('Loading', () => {
     });
 
     it('应用 className 与 style 到容器', () => {
-        const { container } = render(
-            <Loading className="my-loading" style={{ background: 'red' }} />,
-        );
+        const { container } = render(<Loading className="my-loading" style={{ background: 'red' }} />);
         const inner = container.querySelector(`.${styles.container}`) as HTMLElement;
         expect(inner).toHaveClass('my-loading');
         expect(inner.style.background).toBe('red');

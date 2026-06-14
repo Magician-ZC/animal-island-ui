@@ -53,7 +53,7 @@ export interface WeddingInvitationRef {
 }
 
 // ---------- Decorative SVGs ----------
-const Leaf: React.FC<{className?: string}> = ({className}) => (
+const Leaf: React.FC<{ className?: string }> = ({ className }) => (
     <svg className={className} viewBox="0 0 64 64" width="56" height="56" aria-hidden>
         <path
             d="M8 56 C 8 24, 32 4, 60 6 C 58 36, 38 58, 8 56 Z"
@@ -62,25 +62,19 @@ const Leaf: React.FC<{className?: string}> = ({className}) => (
             strokeWidth="2.5"
             strokeLinejoin="round"
         />
-        <path
-            d="M14 50 C 26 40, 40 26, 56 12"
-            stroke="#3d5a1a"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-        />
+        <path d="M14 50 C 26 40, 40 26, 56 12" stroke="#3d5a1a" strokeWidth="2" fill="none" strokeLinecap="round" />
         <path d="M22 42 C 28 38, 32 34, 36 30" stroke="#3d5a1a" strokeWidth="1.4" fill="none" strokeLinecap="round" />
         <path d="M30 48 C 34 44, 38 40, 42 36" stroke="#3d5a1a" strokeWidth="1.4" fill="none" strokeLinecap="round" />
     </svg>
 );
 
-const Flower: React.FC<{color?: string; center?: string; size?: number}> = ({
+const Flower: React.FC<{ color?: string; center?: string; size?: number }> = ({
     color = '#f8a6b2',
     center = '#f7cd67',
     size = 28,
 }) => (
     <svg viewBox="0 0 32 32" width={size} height={size} aria-hidden>
-        {[0, 72, 144, 216, 288].map(angle => (
+        {[0, 72, 144, 216, 288].map((angle) => (
             <ellipse
                 key={angle}
                 cx="16"
@@ -97,7 +91,7 @@ const Flower: React.FC<{color?: string; center?: string; size?: number}> = ({
     </svg>
 );
 
-const Heart: React.FC<{size?: number}> = ({size = 64}) => (
+const Heart: React.FC<{ size?: number }> = ({ size = 64 }) => (
     <svg viewBox="0 0 64 64" width={size} height={size} aria-hidden>
         <path
             d="M32 56 C 8 40, 4 22, 16 14 C 24 9, 30 14, 32 20 C 34 14, 40 9, 48 14 C 60 22, 56 40, 32 56 Z"
@@ -110,7 +104,7 @@ const Heart: React.FC<{size?: number}> = ({size = 64}) => (
     </svg>
 );
 
-const Star: React.FC<{size?: number; color?: string}> = ({size = 18, color = '#f7cd67'}) => (
+const Star: React.FC<{ size?: number; color?: string }> = ({ size = 18, color = '#f7cd67' }) => (
     <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden>
         <path
             d="M12 2 L14.5 9 L22 9.5 L16 14.5 L18 22 L12 17.5 L6 22 L8 14.5 L2 9.5 L9.5 9 Z"
@@ -125,13 +119,7 @@ const Star: React.FC<{size?: number; color?: string}> = ({size = 18, color = '#f
 // 剪刀图标（撕开提示）
 const ScissorsIcon: React.FC = () => (
     <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden>
-        <g
-            fill="none"
-            stroke="#725d42"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
+        <g fill="none" stroke="#725d42" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="6" cy="6" r="2.4" />
             <circle cx="6" cy="18" r="2.4" />
             <path d="M8 7.5 L21 17 M8 16.5 L21 7" />
@@ -150,11 +138,7 @@ const ScissorsIcon: React.FC = () => (
 const NOTCH_RADIUS = 14;
 const LOTTERY_HEIGHT = 160;
 
-const exportNodeAsPng = async (
-    node: HTMLElement,
-    filename: string,
-    scale = 2,
-): Promise<void> => {
+const exportNodeAsPng = async (node: HTMLElement, filename: string, scale = 2): Promise<void> => {
     // 字体抓取 + FontFace 注册 + 生成内嵌 cssText（首次会慢，结果缓存）
     const [fontCssText, { domToCanvas }] = await Promise.all([
         prepareWeddingFontsForExport(),
@@ -180,7 +164,7 @@ const exportNodeAsPng = async (
         const canvas = await domToCanvas(node, {
             scale,
             backgroundColor: undefined, // 透明背景，保留圆角的透明区域
-            font: {cssText: fontCssText}, // 双保险：modern-screenshot 也内嵌一份
+            font: { cssText: fontCssText }, // 双保险：modern-screenshot 也内嵌一份
         });
 
         // 在导出图上手动「打孔」两侧半圆缺口
@@ -250,17 +234,14 @@ export const WeddingInvitation = forwardRef<WeddingInvitationRef, WeddingInvitat
             className,
             style,
         },
-        ref,
+        ref
     ) => {
         const rootRef = useRef<HTMLDivElement>(null);
 
-        const exportAsImage = React.useCallback(
-            async (filename = 'wedding-invitation') => {
-                if (!rootRef.current) return;
-                await exportNodeAsPng(rootRef.current, filename);
-            },
-            [],
-        );
+        const exportAsImage = React.useCallback(async (filename = 'wedding-invitation') => {
+            if (!rootRef.current) return;
+            await exportNodeAsPng(rootRef.current, filename);
+        }, []);
 
         useImperativeHandle(
             ref,
@@ -268,16 +249,10 @@ export const WeddingInvitation = forwardRef<WeddingInvitationRef, WeddingInvitat
                 exportAsImage,
                 getElement: () => rootRef.current,
             }),
-            [exportAsImage],
+            [exportAsImage]
         );
 
-        const cls = [
-            styles.envelope,
-            !showLotteryNumber && styles.noLottery,
-            className,
-        ]
-            .filter(Boolean)
-            .join(' ');
+        const cls = [styles.envelope, !showLotteryNumber && styles.noLottery, className].filter(Boolean).join(' ');
 
         return (
             <div ref={rootRef} className={cls} style={style}>
@@ -288,11 +263,21 @@ export const WeddingInvitation = forwardRef<WeddingInvitationRef, WeddingInvitat
                 <Leaf className={`${styles.cornerLeaf} ${styles.br}`} />
 
                 {/* 飘散的花瓣 / 星星 */}
-                <span className={`${styles.floatItem} ${styles.f1}`}><Flower color="#f8a6b2" /></span>
-                <span className={`${styles.floatItem} ${styles.f2}`}><Flower color="#ecdf52" center="#e59266" size={22} /></span>
-                <span className={`${styles.floatItem} ${styles.f3}`}><Flower color="#b77dee" size={20} /></span>
-                <span className={`${styles.floatItem} ${styles.s1}`}><Star color="#f7cd67" /></span>
-                <span className={`${styles.floatItem} ${styles.s2}`}><Star color="#82d5bb" size={14} /></span>
+                <span className={`${styles.floatItem} ${styles.f1}`}>
+                    <Flower color="#f8a6b2" />
+                </span>
+                <span className={`${styles.floatItem} ${styles.f2}`}>
+                    <Flower color="#ecdf52" center="#e59266" size={22} />
+                </span>
+                <span className={`${styles.floatItem} ${styles.f3}`}>
+                    <Flower color="#b77dee" size={20} />
+                </span>
+                <span className={`${styles.floatItem} ${styles.s1}`}>
+                    <Star color="#f7cd67" />
+                </span>
+                <span className={`${styles.floatItem} ${styles.s2}`}>
+                    <Star color="#82d5bb" size={14} />
+                </span>
 
                 <div className={styles.banner}>
                     <span className={styles.bannerLine} />
@@ -368,14 +353,12 @@ export const WeddingInvitation = forwardRef<WeddingInvitationRef, WeddingInvitat
                             <span className={styles.lotteryHash}>NO.</span>
                             {lotteryNumber}
                         </div>
-                        {lotteryHint && (
-                            <div className={styles.lotteryHint}>{lotteryHint}</div>
-                        )}
+                        {lotteryHint && <div className={styles.lotteryHint}>{lotteryHint}</div>}
                     </div>
                 )}
             </div>
         );
-    },
+    }
 );
 
 WeddingInvitation.displayName = 'WeddingInvitation';

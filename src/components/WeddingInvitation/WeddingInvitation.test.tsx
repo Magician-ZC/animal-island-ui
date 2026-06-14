@@ -14,15 +14,10 @@ vi.mock('./fonts', () => ({
 
 const domToCanvas = vi.fn();
 vi.mock('modern-screenshot', () => ({
-    domToCanvas: (...args: unknown[]) =>
-        (domToCanvas as unknown as (...a: unknown[]) => unknown)(...args),
+    domToCanvas: (...args: unknown[]) => (domToCanvas as unknown as (...a: unknown[]) => unknown)(...args),
 }));
 
-import {
-    WeddingInvitation,
-    WeddingInvitationExportButton,
-    type WeddingInvitationRef,
-} from './WeddingInvitation';
+import { WeddingInvitation, WeddingInvitationExportButton, type WeddingInvitationRef } from './WeddingInvitation';
 
 const fakeCtx = {
     save: vi.fn(),
@@ -67,7 +62,7 @@ describe('WeddingInvitation', () => {
                 time="11:00 AM"
                 venue="V"
                 address="Addr"
-            />,
+            />
         );
         expect(screen.getByText('A')).toBeInTheDocument();
         expect(screen.getByText('B')).toBeInTheDocument();
@@ -95,7 +90,7 @@ describe('WeddingInvitation', () => {
             <>
                 <WeddingInvitation ref={ref} />
                 <WeddingInvitationExportButton targetRef={ref} />
-            </>,
+            </>
         );
         const spy = vi.spyOn(ref.current!, 'exportAsImage').mockResolvedValue();
         await user.click(screen.getByRole('button', { name: /保存为图片/ }));
@@ -109,15 +104,13 @@ describe('WeddingInvitation', () => {
         // 拦截 a.click + remove
         const clickSpy = vi.fn();
         const origCreate = document.createElement.bind(document);
-        const createSpy = vi
-            .spyOn(document, 'createElement')
-            .mockImplementation((tag: string) => {
-                const el = origCreate(tag);
-                if (tag === 'a') {
-                    el.click = clickSpy;
-                }
-                return el;
-            });
+        const createSpy = vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
+            const el = origCreate(tag);
+            if (tag === 'a') {
+                el.click = clickSpy;
+            }
+            return el;
+        });
 
         await act(async () => {
             await ref.current!.exportAsImage('test-card');
@@ -146,23 +139,21 @@ describe('WeddingInvitation', () => {
         render(<WeddingInvitation ref={ref} />);
         let capturedName = '';
         const origCreate = document.createElement.bind(document);
-        const createSpy = vi
-            .spyOn(document, 'createElement')
-            .mockImplementation((tag: string) => {
-                const el = origCreate(tag);
-                if (tag === 'a') {
-                    Object.defineProperty(el, 'download', {
-                        set(v: string) {
-                            capturedName = v;
-                        },
-                        get() {
-                            return capturedName;
-                        },
-                    });
-                    el.click = vi.fn();
-                }
-                return el;
-            });
+        const createSpy = vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
+            const el = origCreate(tag);
+            if (tag === 'a') {
+                Object.defineProperty(el, 'download', {
+                    set(v: string) {
+                        capturedName = v;
+                    },
+                    get() {
+                        return capturedName;
+                    },
+                });
+                el.click = vi.fn();
+            }
+            return el;
+        });
 
         await act(async () => {
             await ref.current!.exportAsImage('my-card');
